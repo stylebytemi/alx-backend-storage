@@ -9,6 +9,7 @@ from functools import wraps
 # Use a different name for the Redis connection
 redis_conn = redis.Redis()
 
+
 def wrap_requests(fn: Callable) -> Callable:
     """ Decorator wrapper """
 
@@ -26,6 +27,8 @@ def wrap_requests(fn: Callable) -> Callable:
     return wrapper
 
 @wrap_requests
+
+
 def get_page(url: str) -> str:
     """get page self descriptive
     """
