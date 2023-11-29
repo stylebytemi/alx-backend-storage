@@ -6,10 +6,10 @@ import redis
 from functools import wraps
 from typing import Any, Callable, Optional, Union, List
 
-
 def count_calls(method: Callable) -> Callable:
     '''Tracks the number of calls made to a method in a Cache class.
     '''
+
     @wraps(method)
     def invoker(self, *args, **kwargs) -> Any:
         '''Invokes the given method after incrementing its call counter.
@@ -17,12 +17,13 @@ def count_calls(method: Callable) -> Callable:
         if isinstance(self._redis, redis.Redis):
             self._redis.incr(method.__qualname__)
         return method(self, *args, **kwargs)
-    return invoker
 
+    return invoker
 
 def call_history(method: Callable) -> Callable:
     '''Tracks the call details of a method in a Cache class.
     '''
+
     @wraps(method)
     def invoker(self, *args, **kwargs) -> Any:
         '''Returns the method's output after storing its inputs and output.
@@ -35,12 +36,13 @@ def call_history(method: Callable) -> Callable:
         if isinstance(self._redis, redis.Redis):
             self._redis.rpush(out_key, output)
         return output
-    return invoker
 
+    return invoker
 
 def replay(fn: Callable) -> None:
     '''Displays the call history of a Cache class' method.
     '''
+
     if fn is None or not hasattr(fn, '__self__'):
         return
     redis_store = getattr(fn.__self__, '_redis', None)
@@ -65,6 +67,7 @@ def replay(fn: Callable) -> None:
 class Cache:
     '''Represents an object for storing data in a Redis data storage.
     '''
+
     INPUTS_KEY_PATTERN = '{}:inputs'
     OUTPUTS_KEY_PATTERN = '{}:outputs'
 
@@ -99,4 +102,6 @@ class Cache:
         return self.get(key, lambda x: x.decode('utf-8'))
 
     def get_int(self, key: str) -> int:
-        '''Retrieves an integer value from a Redis data
+        '''Retrieves an integer value from a Redis data storage.
+        '''
+        return self.get(key, lambda x: int(x))
